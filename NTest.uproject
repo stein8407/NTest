@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{566B20D2-4565-995C-30FC-A1B5BA242C4B}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "NTest",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
