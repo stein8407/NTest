@@ -19,6 +19,9 @@ class ANTestCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
+	UPROPERTY()
+	class UNTLauncherComponent* LauncherComponent;
+
 protected:
 
 	/** Called for side to side input */
@@ -33,6 +36,11 @@ protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface
+
+	void Action1_Pressed();
+	void Action1_Released();
+	void Action2_Pressed();
+	void Action2_Released();
 
 
 public:

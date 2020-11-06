@@ -18,3 +18,13 @@ enum class ELauncherState : uint8
 	SecondaryCharging
 };
 
+UENUM()
+enum class EProjectileType : uint8
+{
+	Normal,
+	Cluster,
+	Charge,
+	Bounce
+};
+
+

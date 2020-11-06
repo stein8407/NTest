@@ -6,6 +6,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "NTLauncherComponent.h"
 
 ANTestCharacter::ANTestCharacter()
 {
@@ -43,6 +44,8 @@ ANTestCharacter::ANTestCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+	LauncherComponent = CreateDefaultSubobject<UNTLauncherComponent>(TEXT("LauncherComp"));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -57,6 +60,11 @@ void ANTestCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInp
 
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &ANTestCharacter::TouchStarted);
 	PlayerInputComponent->BindTouch(IE_Released, this, &ANTestCharacter::TouchStopped);
+
+	PlayerInputComponent->BindAction("Action1", IE_Pressed, this, &ANTestCharacter::Action1_Pressed);
+	PlayerInputComponent->BindAction("Action1", IE_Released, this, &ANTestCharacter::Action1_Released);
+	PlayerInputComponent->BindAction("Action2", IE_Pressed, this, &ANTestCharacter::Action2_Pressed);
+	PlayerInputComponent->BindAction("Action2", IE_Released, this, &ANTestCharacter::Action2_Released);
 }
 
 void ANTestCharacter::MoveRight(float Value)
@@ -76,3 +84,22 @@ void ANTestCharacter::TouchStopped(const ETouchIndex::Type FingerIndex, const FV
 	StopJumping();
 }
 
+void ANTestCharacter::Action1_Pressed()
+{
+	LauncherComponent->OnPrimaryPress();
+}
+
+void ANTestCharacter::Action1_Released()
+{
+	LauncherComponent->OnPrimaryRelease();
+}
+
+void ANTestCharacter::Action2_Pressed()
+{
+	LauncherComponent->OnSecondaryPress();
+}
+
+void ANTestCharacter::Action2_Released()
+{
+	LauncherComponent->OnSecondaryRelease();
+}
