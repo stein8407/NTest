@@ -6,6 +6,10 @@
 #include "NTestCharacter.h"
 #include "Projectiles/NTProjectileBase.h"
 #include "Components/CapsuleComponent.h"
+#include "Projectiles/NTProj_Normal.h"
+#include "Projectiles/NTProj_Cluster.h"
+#include "Projectiles/NTProj_Charge.h"
+#include "Projectiles/NTProj_Bounce.h"
 
 // Sets default values for this component's properties
 UNTLauncherComponent::UNTLauncherComponent()
@@ -75,13 +79,6 @@ void UNTLauncherComponent::DestroyStateMap()
 	}
 }
 
-void UNTLauncherComponent::FireProjectile(EProjectileType FireType)
-{
-	DEBUG_MSG("Fire : %s", FColor::Green, *GETENUMSTRING("EProjectileType", FireType));
-
-	ChangeState(ELauncherState::Default);
-}
-
 float UNTLauncherComponent::GetChargingProgress() const
 {
 	return GetState()->GetChargingProgress();
@@ -105,4 +102,46 @@ void UNTLauncherComponent::OnSecondaryPress()
 void UNTLauncherComponent::OnSecondaryRelease()
 {
 	GetState()->OnSecondary_Release();
+}
+
+TSubclassOf<ANTProjectileBase> UNTLauncherComponent::ProjClassByType(EProjectileType InType)
+{
+	UClass* ProjectileClass = nullptr;
+	switch (InType)
+	{
+	case EProjectileType::Normal:	ProjectileClass = ANTProj_Normal::StaticClass();	break;
+	case EProjectileType::Cluster:	ProjectileClass = ANTProj_Cluster::StaticClass();	break;
+	case EProjectileType::Charge:	ProjectileClass = ANTProj_Charge::StaticClass();	break;
+	case EProjectileType::Bounce:	ProjectileClass = ANTProj_Bounce::StaticClass();	break;
+	}
+
+	return ProjectileClass;
+}
+
+FTransform UNTLauncherComponent::CalcFireTransform() const
+{
+	auto OwnerChar = Cast<ANTestCharacter>(GetOwner());
+	ensure(OwnerChar != nullptr);
+
+	float CapRadius, CapHalfHeight;
+	OwnerChar->GetCapsuleComponent()->GetScaledCapsuleSize(CapRadius, CapHalfHeight);
+	FVector FwdVector = OwnerChar->GetActorForwardVector();
+
+	FVector FireLocation = OwnerChar->GetActorLocation() + FwdVector * (CapRadius + FireOffset_Forward);
+	FireLocation.Z += FireOffset_Ground - CapHalfHeight;
+
+	return FTransform(OwnerChar->GetActorQuat(), FireLocation);
+}
+
+
+void UNTLauncherComponent::FireProjectile(EProjectileType FireType)
+{
+	DEBUG_MSG("Fire : %s", FColor::Green, *GETENUMSTRING("EProjectileType", FireType));
+
+	auto Proj = GetWorld()->SpawnActor<ANTProjectileBase>(ProjClassByType(FireType), CalcFireTransform());
+	ensure(Proj != nullptr);
+	Proj->Launch();
+	
+	// 발사 후에는 상태 초기화 
+	ChangeState(ELauncherState::Default);
 }

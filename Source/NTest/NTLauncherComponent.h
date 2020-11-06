@@ -13,11 +13,24 @@ NTLauncherState¸¦ °ü¸®ÇÏ°í »óÅÂ ±³Ã¼, Ä³¸¯ÅÍ·ÎºÎÅÍ ¹ÞÀº ÀÎÇ²À» ÇöÀç »óÅÂ¿Í ¿¬°áÇ
 #include "NTLauncherComponent.generated.h"
 
 class FNTLauncherState;
+class ANTProjectileBase;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class NTEST_API UNTLauncherComponent : public UActorComponent
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly)	// ÅºÃ¼¹ß»çÀ§Ä¡ Ä¸½¶ Àü¹æ ¿ÀÇÁ¼Â
+	float FireOffset_Forward;
+
+	UPROPERTY(EditDefaultsOnly) // ÅºÃ¼¹ß»çÀ§Ä¡ Áö¸éÀ¸·ÎºÎÅÍ ¿ÀÇÁ¼Â
+	float FireOffset_Ground;
+
+private:
+	FNTLauncherState* CurrentState;
+	TMap<ELauncherState, FNTLauncherState*> StateMap;
+
 
 public:	
 	// Sets default values for this component's properties
@@ -43,14 +56,11 @@ public:
 	void OnSecondaryPress();
 	void OnSecondaryRelease();
 
+	static TSubclassOf<ANTProjectileBase> ProjClassByType(EProjectileType InType);
+
 private:
 	void InitStateMap();
 	void DestroyStateMap();
 
-public:
-	
-
-private:
-	FNTLauncherState* CurrentState;
-	TMap<ELauncherState, FNTLauncherState*> StateMap;
+	FTransform CalcFireTransform() const;
 };
