@@ -68,6 +68,11 @@ void UNTLauncherComponent::InitStateMap()
 	StateMap.Add(ELauncherState::PrimaryCharged, new FLS_PrimaryCharged(this));
 	StateMap.Add(ELauncherState::SecondaryCharging, new FLS_SecondaryCharging(this));
 	CurrentState = StateMap[ELauncherState::Default];
+
+	FireCount.Add(EProjectileType::Normal, 0);
+	FireCount.Add(EProjectileType::Charge, 0);
+	FireCount.Add(EProjectileType::Cluster, 0);
+	FireCount.Add(EProjectileType::Bounce, 0);
 }
 
 void UNTLauncherComponent::DestroyStateMap()
@@ -110,8 +115,8 @@ TSubclassOf<ANTProjectileBase> UNTLauncherComponent::ProjClassByType(EProjectile
 	switch (InType)
 	{
 	case EProjectileType::Normal:	ProjectileClass = ANTProj_Normal::StaticClass();	break;
-	case EProjectileType::Cluster:	ProjectileClass = ANTProj_Cluster::StaticClass();	break;
 	case EProjectileType::Charge:	ProjectileClass = ANTProj_Charge::StaticClass();	break;
+	case EProjectileType::Cluster:	ProjectileClass = ANTProj_Cluster::StaticClass();	break;
 	case EProjectileType::Bounce:	ProjectileClass = ANTProj_Bounce::StaticClass();	break;
 	}
 
@@ -141,7 +146,22 @@ void UNTLauncherComponent::FireProjectile(EProjectileType FireType)
 	auto Proj = GetWorld()->SpawnActor<ANTProjectileBase>(ProjClassByType(FireType), CalcFireTransform());
 	ensure(Proj != nullptr);
 	Proj->Launch();
+
+	++FireCount[FireType];
 	
 	// 발사 후에는 상태 초기화 
 	ChangeState(ELauncherState::Default);
+}
+
+int32 UNTLauncherComponent::GetFireCount(EProjectileType InType) const
+{
+	return FireCount[InType];
+}
+
+void UNTLauncherComponent::ResetFireCounts()
+{
+	for (auto& it : FireCount)
+	{
+		it.Value = 0;
+	}
 }

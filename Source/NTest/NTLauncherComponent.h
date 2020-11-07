@@ -30,7 +30,7 @@ public:
 private:
 	FNTLauncherState* CurrentState;
 	TMap<ELauncherState, FNTLauncherState*> StateMap;
-
+	TMap<EProjectileType, int32> FireCount;
 
 public:	
 	// Sets default values for this component's properties
@@ -57,6 +57,8 @@ public:
 	void OnSecondaryRelease();
 
 	static TSubclassOf<ANTProjectileBase> ProjClassByType(EProjectileType InType);
+	int32 GetFireCount(EProjectileType InType) const;
+	void ResetFireCounts();
 
 private:
 	void InitStateMap();

@@ -22,8 +22,8 @@ UENUM()
 enum class EProjectileType : uint8
 {
 	Normal,
-	Cluster,
 	Charge,
+	Cluster,
 	Bounce
 };
 

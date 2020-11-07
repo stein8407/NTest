@@ -11,6 +11,7 @@ class ANTestCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+public:
 	/** Side view camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* SideViewCameraComponent;
@@ -21,6 +22,10 @@ class ANTestCharacter : public ACharacter
 
 	UPROPERTY()
 	class UNTLauncherComponent* LauncherComponent;
+
+private:
+	UPROPERTY()
+	TSubclassOf<class UUserWidget> MainWidgetClass;
 
 protected:
 
@@ -42,10 +47,13 @@ protected:
 	void Action2_Pressed();
 	void Action2_Released();
 
+private:
+	void SetupWidget();
 
 public:
 	ANTestCharacter();
-
+	virtual void PossessedBy(AController* NewController) override;
+	
 	/** Returns SideViewCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
 	/** Returns CameraBoom subobject **/

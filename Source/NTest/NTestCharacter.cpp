@@ -7,6 +7,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "NTLauncherComponent.h"
+#include "NTMainWidget.h"
 
 ANTestCharacter::ANTestCharacter()
 {
@@ -46,6 +47,28 @@ ANTestCharacter::ANTestCharacter()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 
 	LauncherComponent = CreateDefaultSubobject<UNTLauncherComponent>(TEXT("LauncherComp"));
+
+	ConstructorHelpers::FClassFinder<UUserWidget> WidgetClassFinder(TEXT("/Game/SideScrollerCPP/Blueprints/UW_Main"));
+	MainWidgetClass = WidgetClassFinder.Class;
+}
+
+
+void ANTestCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	SetupWidget();
+}
+
+void ANTestCharacter::SetupWidget()
+{
+	auto PC = Cast<APlayerController>(GetController());
+	if(PC == nullptr)
+		return;
+
+	PC->bShowMouseCursor = true;
+	auto MainWidget = CreateWidget<UNTMainWidget>(PC, MainWidgetClass);
+	MainWidget->Init(this);
+	MainWidget->AddToViewport();
 }
 
 //////////////////////////////////////////////////////////////////////////
