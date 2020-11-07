@@ -1,8 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
-#include "NTLauncherComponent.h"
 #include "NTLauncherState.h"
+#include "NTLauncherComponent.h"
 
 FNTLauncherState::FNTLauncherState(UNTLauncherComponent* InOwner): Owner(InOwner) {}
 

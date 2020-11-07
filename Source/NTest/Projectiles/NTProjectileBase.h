@@ -19,14 +19,17 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	class UProjectileMovementComponent* MoveComponent;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly)	// 탄체 반지름
 	float SphereRadius;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly)	// 진행속력
 	float InitialSpeed;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly)	// 탄체 유지시간 
 	float LifeSpan;
+
+	UPROPERTY(EditDefaultsOnly)	// 충돌 발생 시 제거 여부
+	bool bDestroyOnHit;
 
 private:
 	bool bCountLifeSpan = false;
@@ -52,7 +55,7 @@ private:
 	void InitCommonMovementProperties();
 
 	UFUNCTION()
-	void OnStop(const FHitResult& ImpactResult);
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 public:	
 	// Called every frame

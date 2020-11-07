@@ -8,6 +8,7 @@
 ANTProj_Bounce::ANTProj_Bounce()
 {
 	LifeSpan = 5.f;
+	bDestroyOnHit = false;
 
 	MoveComponent->bShouldBounce = true;
 	MoveComponent->Bounciness = 1.f;

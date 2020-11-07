@@ -50,7 +50,7 @@ void UNTLauncherComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 void UNTLauncherComponent::ChangeState(ELauncherState NextState)
 {
-	DEBUG_MSG("ChangeState : %s", FColor::Red, *GETENUMSTRING("ELauncherState", NextState));
+	// DEBUG_MSG("ChangeState : %s", FColor::Red, *GETENUMSTRING("ELauncherState", NextState));
 
 	CurrentState = StateMap[NextState];
 	CurrentState->OnEnter();
@@ -136,7 +136,7 @@ FTransform UNTLauncherComponent::CalcFireTransform() const
 
 void UNTLauncherComponent::FireProjectile(EProjectileType FireType)
 {
-	DEBUG_MSG("Fire : %s", FColor::Green, *GETENUMSTRING("EProjectileType", FireType));
+	// DEBUG_MSG("Fire : %s", FColor::Green, *GETENUMSTRING("EProjectileType", FireType));
 
 	auto Proj = GetWorld()->SpawnActor<ANTProjectileBase>(ProjClassByType(FireType), CalcFireTransform());
 	ensure(Proj != nullptr);

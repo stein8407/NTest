@@ -6,7 +6,6 @@
 
 ANTProj_Normal::ANTProj_Normal()
 {
-	LifeSpan = 3.f;
 }
 
 void ANTProj_Normal::SetupArrow()

@@ -10,7 +10,6 @@ FQuat ANTProj_Cluster::RelRotationR = FRotator(0.f, 45.f, 0.f).Quaternion();
 
 ANTProj_Cluster::ANTProj_Cluster()
 {
-	LifeSpan = 3.f;
 }
 
 void ANTProj_Cluster::SetupArrow()

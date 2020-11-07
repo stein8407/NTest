@@ -13,6 +13,8 @@ ANTProjectileBase::ANTProjectileBase()
 	PrimaryActorTick.bCanEverTick = true;
 	SphereRadius = 15.f;
 	InitialSpeed = 100.f;
+	LifeSpan = 3.f;
+	bDestroyOnHit = true;
 
 	RootSphere = CreateDefaultSubobject<USphereComponent>(TEXT("RootSphere"));
 	RootSphere->SetCollisionProfileName(TEXT("Projectile"));
@@ -29,10 +31,7 @@ ANTProjectileBase::ANTProjectileBase()
 void ANTProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
-
 	SetupArrow();
-	RemainLifeSpan = LifeSpan;
-	bCountLifeSpan = RemainLifeSpan > 0.f;
 }
 
 // Called every frame
@@ -57,8 +56,13 @@ void ANTProjectileBase::UpdateLifeSpan(float DeltaTime)
 
 void ANTProjectileBase::Launch()
 {	
-	MoveComponent->Activate();
+	RootSphere->OnComponentHit.AddDynamic(this, &ANTProjectileBase::OnHit);
 	RootSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	
+	RemainLifeSpan = LifeSpan;
+	bCountLifeSpan = RemainLifeSpan > 0.f;
+
+	MoveComponent->Activate();
 	OnLaunch();
 }
 
@@ -81,8 +85,6 @@ void ANTProjectileBase::InitCommonMovementProperties()
 	MoveComponent->bRotationFollowsVelocity = true;
 	MoveComponent->ProjectileGravityScale = 0.f;
 	MoveComponent->BounceVelocityStopSimulatingThreshold = 0.f;
-
-	MoveComponent->OnProjectileStop.AddDynamic(this, &ANTProjectileBase::OnStop);
 }
 
 UArrowComponent* ANTProjectileBase::CreateDefaultArrow(FColor InColor, float InSize)
@@ -98,7 +100,12 @@ UArrowComponent* ANTProjectileBase::CreateDefaultArrow(FColor InColor, float InS
 	return Arrow;
 }
 
-void ANTProjectileBase::OnStop(const FHitResult& ImpactResult)
+void ANTProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	Destroy();
+	// DEBUG_MSG("Hit !!", FColor::Cyan);
+
+	if (bDestroyOnHit)
+	{
+		Destroy();
+	}
 }
